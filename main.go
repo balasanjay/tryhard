@@ -71,7 +71,7 @@ var (
 	rewrite = flag.Bool("r", false, "rewrite potential `try` candidate statements to use `try`")
 
 	// customization
-	varname = flag.String("err", "err", `name of error variable; using "" permits any name`)
+	varname = flag.String("err", "", `name of error variable; using "" permits any name`)
 )
 
 var (

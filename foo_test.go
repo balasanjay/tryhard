@@ -1,3 +1,5 @@
+// +build ignore
+
 package foo_test
 
 func bar() error {

@@ -19,7 +19,7 @@ var count int // global count of all `try` candidates
 func tryFile(f *ast.File, modified *bool) {
 	for _, d := range f.Decls {
 		if f, ok := d.(*ast.FuncDecl); ok {
-			if hasErrorResult(f.Type) && f.Body != nil {
+			if f.Body != nil {
 				tryBlock(f.Body, modified)
 			}
 		}
