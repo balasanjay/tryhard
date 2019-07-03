@@ -29,8 +29,7 @@ func tryFile(f *ast.File, modified *bool) {
 // tryBlock is like tryFile but operates on a block b.
 func tryBlock(b *ast.BlockStmt, modified *bool) {
 	dirty := false // if set, b.List contains nil entries
-	var p ast.Stmt // previous statement
-	for i, s := range b.List {
+	for _, s := range b.List {
 		switch s := s.(type) {
 		case *ast.BlockStmt:
 			tryBlock(s, modified)
@@ -51,32 +50,19 @@ func tryBlock(b *ast.BlockStmt, modified *bool) {
 			}
 
 			errname := *varname
-			if isErrTest(s.Cond, &errname) && isErrReturn(s.Body, errname) && s.Else == nil {
-				if s.Init == nil && isErrAssign(p, errname) {
-					count++
-					if *list {
-						listPos(count, p)
-					}
-					if *rewrite {
-						b.List[i-1] = rewriteAssign(p, s.End())
-						b.List[i] = nil // remove `if`
-						dirty = true
-						*modified = true
-					}
-				} else if isErrAssign(s.Init, errname) {
-					count++
-					if *list {
-						listPos(count, s)
-					}
-					if *rewrite {
-						b.List[i] = rewriteAssign(s.Init, s.End())
-						*modified = true
-					}
+			if isErrTest(s.Cond, &errname) && s.Else == nil {
+				if len(s.Body.List) == 0 {
+					fmt.Println("COUNT-0-STMTS")
+				} else if len(s.Body.List) >= 2 {
+					fmt.Println("COUNT-2+-STMTS")
+				} else if _, ok := s.Body.List[0].(*ast.ReturnStmt); ok {
+					fmt.Println("COUNT-1-STMT-RETURN")
+				} else {
+					fmt.Println("COUNT-1-STMT-OTHER")
 				}
 			}
 
 		}
-		p = s
 	}
 
 	if dirty {
