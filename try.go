@@ -58,7 +58,12 @@ func tryBlock(b *ast.BlockStmt, modified *bool) {
 				} else if _, ok := s.Body.List[0].(*ast.ReturnStmt); ok {
 					fmt.Println("COUNT-1-STMT-RETURN")
 				} else {
-					fmt.Println("COUNT-1-STMT-OTHER")
+					switch s.Body.List[0].(type) {
+					case *ast.AssignStmt, *ast.BranchStmt, *ast.ExprStmt, *ast.IncDecStmt, *ast.SendStmt:
+						fmt.Println("COUNT-1-STMT-OTHER-SINGLE")
+					default:
+						fmt.Println("COUNT-1-STMT-OTHER-COMPOUND")
+					}
 				}
 			}
 
